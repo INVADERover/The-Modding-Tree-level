@@ -1,8 +1,8 @@
 let modInfo = {
 	name: "Level Tree",
 	id: "Levelmod",
-	author: "nobody",
-	pointsName: "points",
+	author: "INVADERover",
+	pointsName: "exp",
 	modFiles: ["layers.js", "tree.js"],
 
 	discordName: "",
@@ -41,8 +41,13 @@ function canGenPoints(){
 function getPointGen() {
 	if(!canGenPoints())
 		return new Decimal(0)
+	
+	let gain = new Decimal(0)
 
-	let gain = new Decimal(1)
+	if (hasUpgrade('p', 11)) gain = gain.add(1)
+	if (hasUpgrade('p', 12)) gain = gain.times(2)
+	if (hasUpgrade('p', 21)) gain = gain.times(upgradeEffect('p', 21))
+	if (hasUpgrade('p', 13)) gain = gain.times(2)
 	return gain
 }
 
