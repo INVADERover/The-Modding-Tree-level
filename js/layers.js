@@ -12,7 +12,7 @@ addLayer("p", {
     baseResource: "points", // Name of resource prestige is based on
     baseAmount() {return player.points}, // Get the current amount of baseResource
     type: "normal", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
-    exponent: 0.6, // Prestige currency exponent
+    exponent: 0.5, // Prestige currency exponent
     gainMult() { // Calculate the multiplier for main currency from bonuses
         mult = new Decimal(1)
         return mult
@@ -29,30 +29,60 @@ addLayer("p", {
     upgrades: {
         11: {
             title: "Starting training",
-            description: "+1 base Exp gain",
+            description: "+0.1 Exp gain",
             cost: new Decimal(1),},
-
         12: {
             title: "Running",
-            description: "x2 Exp gain",
+            description: "x1.5 Exp gain",
             cost: new Decimal(1),
             unlocked(){return hasUpgrade("p",11)}},
-
-        21: {
-            title: "Visualization training",
-            description: "Exp boost Exp gain, but it is very weak.",
-            cost: new Decimal(2),
-            effect() {
-                return player.points.add(1).pow(0.1)
-            },
-            effectDisplay() { return format(upgradeEffect(this.layer, this.id))+"x" }, // Add formatting to the effect
-            unlocked(){return hasUpgrade("p",12)}},
-
         13: {
             title: "Please keep running!",
             description: "x2 Exp gain",
-            cost: new Decimal(3),
+            cost: new Decimal(2),
             unlocked(){return hasUpgrade("p",12)}},
+        14: {
+            title: "Please keep running!",
+            description: "x2 Exp gain",
+            cost: new Decimal(4),
+            unlocked(){return hasUpgrade("p",13)}},
+            
+        21: {
+            title: "Visualization training",
+            description: "Exp boost Exp gain, but it is very weak.",
+            cost: new Decimal(1),
+            effect() {return player.points.add(1).pow(0.02)},
+            effectDisplay() { return format(upgradeEffect(this.layer, this.id))+"x" }, // Add formatting to the effect
+            unlocked(){return hasUpgrade("p",12)}},
+
+    },
+
+    buyables: {
+        11: {
+            title: "Running*n", // Optional, displayed at the top in a larger font
+            cost(x) { // cost for buying xth buyable, can be an object if there are multiple currencies
+                return  Decimal.pow(10, x)
+            },
+            effect(x) { // Effects of owning x of the items, x is a decimal
+                return Decimal.pow(2, x);
+            },
+            display() { // Everything else displayed in the buyable button after the title
+                let data = tmp[this.layer].buyables[this.id]
+                return "x2 exp gain \n\n\
+                Cost: " + format(data.cost*10) + " exp\n\n\
+                Amount: " + player[this.layer].buyables[this.id] + "/4\n\
+                Currently: + " + format(data.effect)
+            },
+            unlocked() { return player[this.layer].unlocked }, 
+            canAfford() {
+                return player[this.layer].points.gte(tmp[this.layer].buyables[this.id].cost)},
+            buy() {
+                player.points = player.points.sub(this.cost())
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+            },
+            buyMax() {}, // You'll have to handle this yourself if you want
+            style: {'height':'222px'},
+        },
     },
 })
 
