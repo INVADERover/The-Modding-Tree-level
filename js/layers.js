@@ -8,13 +8,14 @@ addLayer("p", {
     }},
     color: "#4BDC13",
     requires: new Decimal(10), // Can be a function that takes requirement increases into account
-    resource: "Training", // Name of prestige currency
+    resource: "Tra", // Name of prestige currency
     baseResource: "points", // Name of resource prestige is based on
     baseAmount() {return player.points}, // Get the current amount of baseResource
     type: "normal", // normal: cost to gain currency depends on amount gained. static: cost depends on how much you already have
     exponent: 0.5, // Prestige currency exponent
     gainMult() { // Calculate the multiplier for main currency from bonuses
         mult = new Decimal(1)
+        if (hasUpgrade('p', 15)) mult = mult.times(2)
         return mult
     },
     gainExp() { // Calculate the exponent on main currency from bonuses
@@ -27,34 +28,45 @@ addLayer("p", {
     layerShown(){return true},
     
     upgrades: {
-        11: {
-            title: "Starting training",
-            description: "+0.1 Exp gain",
-            cost: new Decimal(1),},
-        12: {
-            title: "Running",
+        11: {title: "forgotten item",
+            description: "+1 base Exp gain",
+            cost: new Decimal(9),
+            unlocked(){return hasUpgrade("p",13)}},
+
+        12: {title: "Starting training",
             description: "x1.5 Exp gain",
-            cost: new Decimal(1),
-            unlocked(){return hasUpgrade("p",11)}},
-        13: {
-            title: "Please keep running!",
+            cost: new Decimal(2),},
+
+        13: {title: "Running",
             description: "x2 Exp gain",
             cost: new Decimal(2),
             unlocked(){return hasUpgrade("p",12)}},
-        14: {
-            title: "Please keep running!",
-            description: "x2 Exp gain",
+
+        14: {title: "Run infinitely",
+            description: "Unlock the way to run infinitely",
             cost: new Decimal(4),
             unlocked(){return hasUpgrade("p",13)}},
             
-        21: {
-            title: "Visualization training",
+        15: {title: "Streamlining training",
+            description: "x2 Training gain",
+            cost: new Decimal(24),
+            unlocked(){return hasUpgrade("p",14)}},
+
+
+        21: {title: "Visualization training",
             description: "Exp boost Exp gain, but it is very weak.",
             cost: new Decimal(1),
-            effect() {return player.points.add(1).pow(0.02)},
+            effect() {return player.points.add(1).pow(0.04)},
             effectDisplay() { return format(upgradeEffect(this.layer, this.id))+"x" }, // Add formatting to the effect
             unlocked(){return hasUpgrade("p",12)}},
 
+        22: {title: "Visualization training2",
+            description: "Training boost Exp gain, but it is very weak.",
+            cost: new Decimal(4),
+            effect() {return player[this.layer].points.add(1).pow(0.08)},
+            effectDisplay() { return format(upgradeEffect(this.layer, this.id))+"x" }, // Add formatting to the effect
+            unlocked(){return hasUpgrade("p",21)}},    
+            
     },
 
     buyables: {
@@ -69,23 +81,37 @@ addLayer("p", {
             display() { // Everything else displayed in the buyable button after the title
                 let data = tmp[this.layer].buyables[this.id]
                 return "x2 exp gain \n\n\
-                Cost: " + format(data.cost*10) + " exp\n\n\
-                Amount: " + player[this.layer].buyables[this.id] + "/4\n\
-                Currently: + " + format(data.effect)
+                Cost: " + format(data.cost) + " Tra\n\n\
+                Amount: " + player[this.layer].buyables[this.id] + "\n\
+                Currently: x" + format(data.effect)
             },
-            unlocked() { return player[this.layer].unlocked }, 
+            unlocked() { return hasUpgrade("p",14)},
             canAfford() {
                 return player[this.layer].points.gte(tmp[this.layer].buyables[this.id].cost)},
             buy() {
-                player.points = player.points.sub(this.cost())
+                player[this.layer].points = player[this.layer].points.sub(this.cost())
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
             },
             buyMax() {}, // You'll have to handle this yourself if you want
-            style: {'height':'222px'},
+            style: {'height':'170px'},
         },
     },
-})
+},
+)
 
+addLayer("l", {
+    startData() { return {
+        unlocked: true,
+        points: new Decimal(0),
+    }},
+    color: "yellow",
+    resource: "Level", 
+    row: "side",
+    tooltip() { // Optional, tooltip displays when the layer is locked
+        return ("Achievements")
+    },
+},
+)
 
 addLayer("a", {
     startData() { return {
@@ -101,10 +127,10 @@ addLayer("a", {
     achievementPopups: true,
     achievements: {
         11: {
-            name: "EIEIO",
-            done() {return player.p.points.gte(2)},
-            goalTooltip: "How did this happen?", // Shows when achievement is not completed
-            doneTooltip: "You did it!", // Showed when the achievement is completed
+            name: "The first step",
+            done() {return player.p.points.gte(1)},
+            tooltip: "Get a farm point.\n\nReward: The dinosaur is now your friend (you can max Farm Points).", // Showed when the achievement is completed
+            onComplete() {player[this.layer].points = player[this.layer].points.add(1)}
         },
     },
 },
