@@ -107,6 +107,7 @@ addLayer("l", {
     color: "yellow",
     resource: "Level", 
     row: "side",
+    layerShown() { return hasUpgrade("p",15)},
     tooltip() { // Optional, tooltip displays when the layer is locked
         return ("Achievements")
     },
