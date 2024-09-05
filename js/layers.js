@@ -43,7 +43,7 @@ addLayer("p", {
             unlocked(){return hasUpgrade("p",12)}},
 
         14: {title: "Run infinitely",
-            description: "Unlock the way to run infinitely",
+            description: "Unlock the way to running infinitely",
             cost: new Decimal(4),
             unlocked(){return hasUpgrade("p",13)}},
             
@@ -96,6 +96,14 @@ addLayer("p", {
             style: {'height':'170px'},
         },
     },
+
+    clickables: {
+        11: {
+            display() {return "T+100"},
+            canClick() {return true},
+            onClick() {player[this.layer].points = player[this.layer].points.add(100)}
+        }
+    }
 },
 )
 
@@ -103,16 +111,39 @@ addLayer("l", {
     startData() { return {
         unlocked: true,
         points: new Decimal(0),
+        level_cost: new Decimal(0),
     }},
     color: "yellow",
     resource: "Level", 
     row: "side",
-    layerShown() { return hasUpgrade("p",15)},
-    tooltip() { // Optional, tooltip displays when the layer is locked
-        return ("Achievements")
+
+    buyables: {
+        11: {
+            title: "LevelUp",
+            cost(x) {
+                if (x == 0)return Decimal.add(1)
+                if (x == 1)return Decimal.add(1000)
+                if (x == 2)return Decimal.add(1000000)
+            },
+            display() {
+                let data = tmp[this.layer].buyables[this.id]
+                return "\n\ Cost:" + format(data.cost) + " Exp\n\n\
+                Amount: " + player[this.layer].buyables[this.id]
+            },
+            canAfford() {return player.points.gte(tmp[this.layer].buyables[this.id].cost)},
+            buy() {
+                player.points = player.points.sub(this.cost())
+                player[this.layer].points = player[this.layer].points.add(1)
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
+            },
+            style: {'height':'170px'},
+        },
     },
-},
-)
+
+    shouldNotify() {return player.points.gte(tmp[this.layer].buyables[11].cost)},
+    layerShown() { return hasUpgrade("p",15)},
+
+},)
 
 addLayer("a", {
     startData() { return {
