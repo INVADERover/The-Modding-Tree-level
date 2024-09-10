@@ -116,7 +116,9 @@ addLayer("l", {
     color: "yellow",
     resource: "Level", 
     row: "side",
+    
 
+    
     buyables: {
         11: {
             title: "LevelUp",
@@ -142,6 +144,15 @@ addLayer("l", {
 
     shouldNotify() {return player.points.gte(tmp[this.layer].buyables[11].cost)},
     layerShown() { return hasUpgrade("p",15)},
+
+    tabFormat: [
+        "main-display",
+        "buyables",
+        "blank",
+        ["display-text",
+            function() {
+                return "Effect<br>"},],
+    ]
 
 },)
 
