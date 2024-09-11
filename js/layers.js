@@ -48,7 +48,7 @@ addLayer("p", {
             unlocked(){return hasUpgrade("p",13)}},
             
         15: {title: "Streamlining training",
-            description: "x2 Training gain",
+            description: "x2 Tra gain",
             cost: new Decimal(24),
             unlocked(){return hasUpgrade("p",14)}},
 
@@ -61,11 +61,18 @@ addLayer("p", {
             unlocked(){return hasUpgrade("p",12)}},
 
         22: {title: "Visualization training2",
-            description: "Training boost Exp gain, but it is very weak.",
+            description: "Tra boost Exp gain, but it is very weak.",
             cost: new Decimal(4),
             effect() {return player[this.layer].points.add(1).pow(0.08)},
             effectDisplay() { return format(upgradeEffect(this.layer, this.id))+"x" }, // Add formatting to the effect
-            unlocked(){return hasUpgrade("p",21)}},    
+            unlocked(){return hasUpgrade("p",21)}},
+
+        23: {title: "...",
+            description: "...",
+            cost: new Decimal(4),
+            effect() {return player[this.layer].points.add(1).pow(0.08)},
+            effectDisplay() { return format(upgradeEffect(this.layer, this.id))+"x" }, // Add formatting to the effect
+            unlocked(){return hasUpgrade("p",21)}},
             
     },
 
@@ -117,8 +124,6 @@ addLayer("l", {
     resource: "Level", 
     row: "side",
     
-
-    
     buyables: {
         11: {
             title: "LevelUp",
@@ -142,17 +147,29 @@ addLayer("l", {
         },
     },
 
+    milestones: {
+        0: {
+            requirementDescription: "LVL.01",
+            effectDescription: "Add 2 upgrades to the tra layer",
+            done() { return player[this.layer].points.gte(1) }
+        }   
+    },
+
+    
+
     shouldNotify() {return player.points.gte(tmp[this.layer].buyables[11].cost)},
     layerShown() { return hasUpgrade("p",15)},
+    milestonePopups: false,
 
     tabFormat: [
         "main-display",
         "buyables",
         "blank",
-        ["display-text",
-            function() {
-                return "Effect<br>"},],
+        "milestones",
     ]
+
+    
+    
 
 },)
 
@@ -172,7 +189,13 @@ addLayer("a", {
         11: {
             name: "The first step",
             done() {return player.p.points.gte(1)},
-            tooltip: "Get a farm point.\n\nReward: The dinosaur is now your friend (you can max Farm Points).", // Showed when the achievement is completed
+            tooltip: "Get a 1 tra",
+            onComplete() {player[this.layer].points = player[this.layer].points.add(1)}
+        },
+        12: {
+            name: "The truth first step",
+            done() {return player.l.points.gte(1)},
+            tooltip: "Reach Level 1",
             onComplete() {player[this.layer].points = player[this.layer].points.add(1)}
         },
     },
