@@ -15,7 +15,8 @@ addLayer("p", {
     exponent: 0.5, // Prestige currency exponent
     gainMult() { // Calculate the multiplier for main currency from bonuses
         mult = new Decimal(1)
-        if (hasUpgrade('p', 15)) mult = mult.times(2)
+        if (hasUpgrade('p', 15)) mult = mult.times(upgradeEffect('p', 15))
+        if (hasUpgrade('p', 24)) mult = mult.times(upgradeEffect('p', 24))
         return mult
     },
     gainExp() { // Calculate the exponent on main currency from bonuses
@@ -28,51 +29,65 @@ addLayer("p", {
     layerShown(){return true},
     
     upgrades: {
-        11: {title: "forgotten item",
+        11: {title: "-11-<br>forgotten item",
             description: "+1 base Exp gain",
             cost: new Decimal(9),
             unlocked(){return hasUpgrade("p",13)}},
 
-        12: {title: "Starting training",
+        12: {title: "-12-<br>Starting training",
             description: "x1.5 Exp gain",
             cost: new Decimal(2),},
 
-        13: {title: "Running",
+        13: {title: "-13-<br>Running",
             description: "x2 Exp gain",
             cost: new Decimal(2),
             unlocked(){return hasUpgrade("p",12)}},
 
-        14: {title: "Run infinitely",
+        14: {title: "-14-<br>Run infinitely",
             description: "Unlock the way to running infinitely",
             cost: new Decimal(4),
             unlocked(){return hasUpgrade("p",13)}},
             
-        15: {title: "Streamlining training",
+        15: {title: "-15-<br>Streamlining training",
             description: "x2 Tra gain",
             cost: new Decimal(24),
+            effect() {return 2},
             unlocked(){return hasUpgrade("p",14)}},
 
 
-        21: {title: "Visualization training",
+        21: {title: "-21-<br>Visualization training 1",
             description: "Exp boost Exp gain, but it is very weak.",
             cost: new Decimal(1),
             effect() {return player.points.add(1).pow(0.04)},
-            effectDisplay() { return format(upgradeEffect(this.layer, this.id))+"x" }, // Add formatting to the effect
+            effectDisplay() {return format(upgradeEffect(this.layer, this.id))+"x"},
             unlocked(){return hasUpgrade("p",12)}},
 
-        22: {title: "Visualization training2",
+        22: {title: "-22-<br>Visualization training 2",
             description: "Tra boost Exp gain, but it is very weak.",
             cost: new Decimal(4),
             effect() {return player[this.layer].points.add(1).pow(0.08)},
-            effectDisplay() { return format(upgradeEffect(this.layer, this.id))+"x" }, // Add formatting to the effect
+            effectDisplay() {return format(upgradeEffect(this.layer, this.id))+"x"},
             unlocked(){return hasUpgrade("p",21)}},
 
-        23: {title: "...",
-            description: "...",
-            cost: new Decimal(4),
-            effect() {return player[this.layer].points.add(1).pow(0.08)},
-            effectDisplay() { return format(upgradeEffect(this.layer, this.id))+"x" }, // Add formatting to the effect
-            unlocked(){return player.l.points.gte(1)}},
+        23: {title: "-24-<br>Motivation 1",
+            description: "Increase the amount of Exp gained based on AP",
+            cost: new Decimal(50),
+            effect() {return Decimal.pow(1.5, player.a.points)},
+            effectDisplay() {return format(upgradeEffect(this.layer, this.id))+"x"},
+            unlocked(){
+                if ((player.l.points.gte(1)) && (hasUpgrade("p",22))){
+                    return true}},
+                },
+
+        24: {title: "-24-<br>Motivation 2",
+            description: "Increase the amount of Tre gained based on AP",
+            cost: new Decimal(111),
+            effect() {return player.a.points},
+            effectDisplay() {return format(upgradeEffect(this.layer, this.id))+"x"},
+            unlocked(){
+                if ((player.l.points.gte(1)) && (hasUpgrade("p",22))){
+                    return true}},
+                },
             
     },
 
@@ -128,8 +143,8 @@ addLayer("l", {
         11: {
             title: "LevelUp",
             cost(x) {
-                if (x == 0)return Decimal.add(1)
-                if (x == 1)return Decimal.add(1000)
+                if (x == 0)return Decimal.add(2)
+                if (x == 1)return Decimal.add(5227)
                 if (x == 2)return Decimal.add(1000000)
             },
             display() {
@@ -151,7 +166,13 @@ addLayer("l", {
         0: {
             requirementDescription: "LVL.01",
             effectDescription: "Add 2 upgrades to the tra layer",
-            done() { return player[this.layer].points.gte(1) }
+            done() { return player[this.layer].points.gte(1)}
+        },
+
+        1: {
+            requirementDescription: "LVL.02",
+            effectDescription: "Increase the amount of Exp gained based on Lvl",
+            done() { return player[this.layer].points.gte(2)}
         }   
     },
 
