@@ -59,35 +59,33 @@ addLayer("p", {
             description: "Exp boost Exp gain, but it is very weak.",
             cost: new Decimal(1),
             effect() {return player.points.add(1).pow(0.04)},
-            effectDisplay() {return format(upgradeEffect(this.layer, this.id))+"x"},
+            effectDisplay() {return format(this.effect())+"x"},
             unlocked(){return hasUpgrade("p",12)}},
 
         22: {title: "-22-<br>Visualization training 2",
             description: "Tra boost Exp gain, but it is very weak.",
             cost: new Decimal(4),
             effect() {return player[this.layer].points.add(1).pow(0.08)},
-            effectDisplay() {return format(upgradeEffect(this.layer, this.id))+"x"},
+            effectDisplay() {return format(this.effect())+"x"},
             unlocked(){return hasUpgrade("p",21)}},
 
         23: {title: "-24-<br>Motivation 1",
             description: "Increase the amount of Exp gained based on AP",
-            cost: new Decimal(50),
+            cost: new Decimal(100),
             effect() {return Decimal.pow(1.5, player.a.points)},
-            effectDisplay() {return format(upgradeEffect(this.layer, this.id))+"x"},
+            effectDisplay() {return format(this.effect())+"x"},
             unlocked(){
                 if ((player.l.points.gte(1)) && (hasUpgrade("p",22))){
-                    return true}},
-                },
+                    return true}}},
 
         24: {title: "-24-<br>Motivation 2",
             description: "Increase the amount of Tre gained based on AP",
-            cost: new Decimal(111),
+            cost: new Decimal(200),
             effect() {return player.a.points},
-            effectDisplay() {return format(upgradeEffect(this.layer, this.id))+"x"},
+            effectDisplay() {return format(this.effect())+"x"},
             unlocked(){
                 if ((player.l.points.gte(1)) && (hasUpgrade("p",22))){
-                    return true}},
-                },
+                    return true}}},
             
     },
 
@@ -171,7 +169,7 @@ addLayer("l", {
 
         1: {
             requirementDescription: "LVL.02",
-            effectDescription: "Increase the amount of Exp gained based on Lvl",
+            effectDescription() { return "Increase the amount of Exp gained based on Lvl<br>Currently: x"+player.a.points},
             done() { return player[this.layer].points.gte(2)}
         }   
     },
