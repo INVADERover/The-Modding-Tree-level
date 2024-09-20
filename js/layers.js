@@ -136,56 +136,17 @@ addLayer("l", {
     color: "yellow",
     resource: "Level", 
     row: "side",
-    
-    buyables: {
-        11: {
-            title: "LevelUp",
-            cost(x) {
-                if (x == 0)return Decimal.add(2)
-                if (x == 1)return Decimal.add(5227)
-                if (x == 2)return Decimal.add(1000000)
-            },
-            display() {
-                let data = tmp[this.layer].buyables[this.id]
-                return "\n\ Cost:" + format(data.cost) + " Exp\n\n\
-                Amount: " + player[this.layer].buyables[this.id]
-            },
-            canAfford() {return player.points.gte(tmp[this.layer].buyables[this.id].cost)},
-            buy() {
-                player.points = player.points.sub(this.cost())
-                player[this.layer].points = player[this.layer].points.add(1)
-                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1))
-            },
-            style: {'height':'170px'},
-        },
-    },
 
-    milestones: {
-        0: {
-            requirementDescription: "LVL.01",
-            effectDescription: "Add 2 upgrades to the tra layer",
-            done() { return player[this.layer].points.gte(1)}
+    upgrades: {
+        11: {title: "Lvl.1",
+            description: "+1 base Exp gain",
+            canAfford(){return player.points.gte(tmp[this.layer].upgrades[this.id].cost)},
+            pay(){player.point = player.points.sub(this.cost())},
+            }
         },
 
-        1: {
-            requirementDescription: "LVL.02",
-            effectDescription() { return "Increase the amount of Exp gained based on Lvl<br>Currently: x"+player.a.points},
-            done() { return player[this.layer].points.gte(2)}
-        }   
-    },
-
-    
-
-    shouldNotify() {return player.points.gte(tmp[this.layer].buyables[11].cost)},
     layerShown() { return hasUpgrade("p",15)},
     milestonePopups: false,
-
-    tabFormat: [
-        "main-display",
-        "buyables",
-        "blank",
-        "milestones",
-    ]
 
     
     
