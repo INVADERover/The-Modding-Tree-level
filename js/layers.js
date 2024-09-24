@@ -110,6 +110,9 @@ addLayer("p", {
         layerDataReset(this.layer)
         if (player.ac.points.gte(1))player.p.upgrades.push("21")
         if (player.ac.points.gte(2))player.p.upgrades.push("22")
+        if (player.ac.points.gte(3))player.p.upgrades.push("23")
+        if (player.ac.points.gte(4))player.p.upgrades.push("24")
+        if (player.ac.points.gte(5))player.p.upgrades.push("25")
 
     }},
 
@@ -213,7 +216,7 @@ addLayer("l", {
             cost: new Decimal(50),
             effect() {
                 let eff = player.l.points.add(2).add(player.ac.points)
-                if (hasAchievement("a", 14)) eff = eff.add(tmp.a.point)
+                if (hasAchievement("a", 14)) eff = eff.add(player.a.points)
                 
                 return eff},
             effectDisplay() {return format(this.effect())+"%"},
@@ -269,9 +272,9 @@ addLayer("a", {
             onComplete() {player[this.layer].points = player[this.layer].points.add(1)}
         },
         14: {
-            name: "established (established) path",
-            done() {return hasUpgrade("ac",21)},
-            tooltip: "Purchase -A11- upgrade<br>Reward: Add ACP to the effect of LVL.3",
+            name: "Efficient Training",
+            done() {return player.ac.points.gte(3)},
+            tooltip: "Reach 3 ACT<br>Reward: Add ACP to the effect of LVL.3",
             onComplete() {player[this.layer].points = player[this.layer].points.add(1)}
         },
         
