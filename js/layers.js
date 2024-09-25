@@ -210,7 +210,7 @@ addLayer("l", {
         13: {
             title: "Lvl.3",
             description: "Generate TRA based on LVL",
-            currencyDisplayName:"LVL",
+            currencyDisplayName:"TRA",
             currencyInternalName:"points",
             currencyLayer:"p",
             cost: new Decimal(50),
