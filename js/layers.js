@@ -45,7 +45,7 @@ addLayer("p", {
         22: { title: "-T12-",
             description: "EXP boost to EXP gain",
             cost: new Decimal(2),
-            effect() {return player.points.add(1).pow(0.04)},
+            effect() {return player.points.add(1).pow(0.06)},
             effectDisplay() {return format(this.effect())+"x"},
             unlocked(){return hasUpgrade("p",21)}
             },
@@ -229,7 +229,7 @@ addLayer("l", {
             description: "-T11- is boosted by other TRA upgrades.",
             currencyDisplayName:"EXP",
             currencyInternalName:"points",
-            cost: new Decimal(50000),
+            cost: new Decimal(30000),
             onPurchase(){player[this.layer].points = player[this.layer].points.add(1)},
             unlocked(){return hasUpgrade("l",13)},
             },
