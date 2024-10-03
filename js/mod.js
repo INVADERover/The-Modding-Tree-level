@@ -45,15 +45,16 @@ function getPointGen() {
 	let gain = new Decimal(0)
 
 	gain = gain.add(player.a.points)
-	if (hasUpgrade('p', 21)) gain = gain.times(upgradeEffect('p', 21))
-	if (hasUpgrade('p', 22)) gain = gain.times(upgradeEffect('p', 22))
-	if (hasUpgrade('p', 23)) gain = gain.times(upgradeEffect('p', 23))
+	if (hasUpgrade('t', 21)) gain = gain.times(upgradeEffect('t', 21))
+	if (hasUpgrade('t', 22)) gain = gain.times(upgradeEffect('t', 22))
+	if (hasUpgrade('t', 23)) gain = gain.times(upgradeEffect('t', 23))
+	if (hasUpgrade('t', 26)) gain = gain.times(upgradeEffect('t', 26))
 	
-	if (hasUpgrade('ac', 21)) gain = gain.times(upgradeEffect('ac', 21))
+	if (hasUpgrade('m', 21)) gain = gain.times(upgradeEffect('m', 21))
 	
 	if (player.l.points.gte(2)) gain = gain.times(player.l.points)
 
-	gain = gain.times(buyableEffect('p', 11))
+	gain = gain.times(buyableEffect('t', 11))
 	return gain
 }
 
