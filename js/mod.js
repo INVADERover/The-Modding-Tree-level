@@ -50,11 +50,10 @@ function getPointGen() {
 	if (hasUpgrade('t', 23)) gain = gain.times(upgradeEffect('t', 23))
 	if (hasUpgrade('t', 26)) gain = gain.times(upgradeEffect('t', 26))
 	
-	if (hasUpgrade('m', 21)) gain = gain.times(upgradeEffect('m', 21))
-	
 	if (player.l.points.gte(2)) gain = gain.times(player.l.points)
 
 	gain = gain.times(buyableEffect('t', 11))
+	gain = gain.times(layers.m.effect())
 	gain = gain.times(layers.p.effect())
 	//gain = gain.times(10000000)
 	return gain
