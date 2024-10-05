@@ -2,7 +2,7 @@ let modInfo = {
 	name: "Level Tree",
 	id: "Levelmod",
 	author: "INVADERover",
-	pointsName: "exp",
+	pointsName: "EXP",
 	modFiles: ["layers.js", "tree.js"],
 
 	discordName: "",
@@ -55,6 +55,8 @@ function getPointGen() {
 	if (player.l.points.gte(2)) gain = gain.times(player.l.points)
 
 	gain = gain.times(buyableEffect('t', 11))
+	gain = gain.times(layers.p.effect())
+	//gain = gain.times(10000000)
 	return gain
 }
 
