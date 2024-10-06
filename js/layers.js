@@ -172,7 +172,7 @@ addLayer("t", {
                 return eff
             },
             display() {
-                return `Add to gain TRA<br>
+                return `Gain <span class="tracss">Tra</span> per second
                         Amount: ${player.t.buyables[12]}<br>
                         Effect: +${format(tmp.t.buyables[12].effect)}%<br>
                         Cost: ${format(tmp.t.buyables[12].cost)} <span class="tracss">Tra</span>
@@ -200,7 +200,7 @@ addLayer("t", {
                 return new Decimal.add(x);
             },
             display() {
-                return `Add to gain TRA<br>
+                return `Add <span class="tracss">T11</span> and <span class="tracss">T12</span> for free<br>
                         Amount: ${player.t.buyables[13]}<br>
                         Effect: x${format(tmp.t.buyables[13].effect)}<br>
                         Cost: ${format(tmp.t.buyables[13].cost)} <span class="tracss">Tra</span>
