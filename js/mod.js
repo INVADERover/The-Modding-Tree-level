@@ -2,7 +2,7 @@ let modInfo = {
 	name: "Level Tree",
 	id: "Levelmod",
 	author: "INVADERover",
-	pointsName: "EXP",
+	pointsName: "Exp",
 	modFiles: ["layers.js", "tree.js"],
 
 	discordName: "",
@@ -49,6 +49,8 @@ function getPointGen() {
 	if (hasUpgrade('t', 22)) gain = gain.times(upgradeEffect('t', 22))
 	if (hasUpgrade('t', 23)) gain = gain.times(upgradeEffect('t', 23))
 	if (hasUpgrade('t', 26)) gain = gain.times(upgradeEffect('t', 26))
+	
+	if (hasMilestone('p', 6)) gain = gain.times(2)
 	
 	if (player.l.points.gte(2)) gain = gain.times(player.l.points)
 

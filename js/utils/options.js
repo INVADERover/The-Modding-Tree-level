@@ -76,3 +76,27 @@ function milestoneShown(layer, id) {
 	}
 	return false;
 }
+
+function milestoneShown_one(layer, id,Shown) {
+	complete = player[layer].milestones.includes(id);
+	auto = layers[layer].milestones[id].toggles;
+
+	switch (Shown) {
+		case "always":
+			return true;
+			break;
+		case "last":
+			return (auto) || !complete || player[layer].lastMilestone === id;
+			break;
+		case "automation":
+			return (auto) || !complete;
+			break;
+		case "incomplete":
+			return !complete;
+			break;
+		case "never":
+			return false;
+			break;
+	}
+	return false;
+}

@@ -6,7 +6,7 @@ function exponentialFormat(num, precision, mantissa = true) {
         m = decimalOne
         e = e.add(1)
     }
-    e = (e.gte(1e9) ? format(e, 3) : (e.gte(10000) ? commaFormat(e, 0) : e.toStringWithDecimalPlaces(0)))
+    e = (e.gte(1e6) ? format(e, 3) : (e.gte(10000) ? commaFormat(e, 0) : e.toStringWithDecimalPlaces(0)))
     if (mantissa)
         return m.toStringWithDecimalPlaces(precision) + "e" + e
     else return "e" + e
@@ -40,14 +40,14 @@ function sumValues(x) {
     return x.reduce((a, b) => Decimal.add(a, b))
 }
 
-function format(decimal, precision = 2, small) {
+function format(decimal, noDecimalBelow1e3 = false, precision = 2, small) {
     small = small || modInfo.allowSmall
     decimal = new Decimal(decimal)
     if (isNaN(decimal.sign) || isNaN(decimal.layer) || isNaN(decimal.mag)) {
         player.hasNaN = true;
         return "NaN"
     }
-    if (decimal.sign < 0) return "-" + format(decimal.neg(), precision, small)
+    if (decimal.sign < 0) return "-" + format(decimal.neg(), noDecimalBelow1e3, precision, small)
     if (decimal.mag == Number.POSITIVE_INFINITY) return "Infinity"
     if (decimal.gte("eeee1000")) {
         var slog = decimal.slog()
@@ -56,8 +56,16 @@ function format(decimal, precision = 2, small) {
     }
     else if (decimal.gte("1e1000000")) return exponentialFormat(decimal, 0, false)
     else if (decimal.gte("1e10000")) return exponentialFormat(decimal, 0)
-    else if (decimal.gte(1e9)) return exponentialFormat(decimal, precision)
+    else if (decimal.gte(1e6)) return exponentialFormat(decimal, precision)
     else if (decimal.gte(1e3)) return commaFormat(decimal, 0)
+    //noDecimalBelow1e3追加部分　noDecimalBelow1e3がtrueの場合、1e3以下はprecision(少数表記数)を0にし、以降はprecisionに従う
+    else if (decimal.gte(0)) {
+        if (noDecimalBelow1e3) {
+            return commaFormat(decimal, 0)
+        } else {
+            return commaFormat(decimal, precision)
+        }
+    }
     else if (decimal.gte(0.0001) || !small) return regularFormat(decimal, precision)
     else if (decimal.eq(0)) return (0).toFixed(precision)
 
@@ -68,15 +76,15 @@ function format(decimal, precision = 2, small) {
         return val.replace(/([^(?:e|F)]*)$/, '-$1')
     }
     else   
-        return format(decimal, precision) + "⁻¹"
-
+        return format(decimal, noDecimalBelow1e3, precision, small) + "⁻¹"
 }
 
+//微変更部
 function formatWhole(decimal) {
     decimal = new Decimal(decimal)
-    if (decimal.gte(1e9)) return format(decimal, 2)
-    if (decimal.lte(0.99) && !decimal.eq(0)) return format(decimal, 2)
-    return format(decimal, 0)
+    if (decimal.gte(1e6)) return format(decimal, false, 2)
+    if (decimal.lte(0.99) && !decimal.eq(0)) return format(decimal, false, 2)
+    return format(decimal, false, 0)
 }
 
 function formatTime(s) {

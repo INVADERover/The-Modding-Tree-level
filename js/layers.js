@@ -2,20 +2,22 @@ addLayer("t", {
     name: "Training",
     symbol: "T",
     position: 0,
+    row: 0,
+    color: "#26FF00",
+    resource: "Training",
+    baseResource: "Exp",
+    baseAmount() { return player.points },
+    requires: new Decimal(10),
+    type: "normal",
+    exponent: 0.5,
+    layerShown() { return true },
+
     startData() { 
         return {
             unlocked: true,
             points: new Decimal(0),
         }
     },
-    color: "#33FF57",
-    requires: new Decimal(10),
-    resource: "Training",
-    baseResource: "points",
-    baseAmount() { return player.points },
-    type: "normal",
-    exponent: 0.5,
-    
     gainMult() {
         let mult = new Decimal(1);
         if (hasUpgrade('t', 24)) mult = mult.times(upgradeEffect('t', 24));
@@ -29,25 +31,28 @@ addLayer("t", {
         mult = mult.times(layers.c.effect());
         return mult;
     },
-
     gainExp() {
         return new Decimal(1);
     },
-    
-    row: 0,
-    layerShown() { return true },
+    passiveGeneration() {
+        if (hasUpgrade('l', 23)) return upgradeEffect('l', 23).div(100);
+    },
 
     upgrades: {
         21: { 
-            title: "-T11-",
-            description: "x2 EXP gain",
+            fullDisplay() {
+                return `<span style="font-size: 14px;">-T11-</span><br>
+                        ${hasUpgrade('l', 24) ? 'Boost <span class="Expcs">Exp</span> by the number of<br><span class="Tracs">Tra upgrades</span><br><br>' : 'x2 <span class="Expcs">Exp</span> gain<br><br><br><br>'}
+                        x${format(this.effect())} <span class="Expcs">Exp</span><br><br>
+                        Cost: ${format(this.cost(),true)} <span class="Tracs">Tra</span>
+                    `;
+            },
             cost() {return new Decimal(2).times(player.c.c1up)},
             effect() {
                 let eff = new Decimal(2);
                 if (hasUpgrade('l', 24)) eff = eff.add(upgradeEffect('l', 24));
                 return eff;
             },
-            effectDisplay() { return format(this.effect()) + "x" },
             unlocked() {
                 if(player.a.points.gte(1)) { return true }//デフォ
                 if(inChallenge("c", 12)) { return true }//C12
@@ -55,11 +60,15 @@ addLayer("t", {
             onPurchase() { if (inChallenge('c', 12)) { player.c.c1up = player.c.c1up.times(10) }}//C12
         },
         22: { 
-            title: "-T12-",
-            description: "EXP boost to EXP gain",
+            fullDisplay() {
+                return `<span style="font-size: 14px;">-T12-</span><br>
+                        <span class="Expcs">Exp</span> boosts <span class="Expcs">Exp</span> gain<br><br><br>
+                        x${format(this.effect())} <span class="Expcs">Exp</span><br><br>
+                        Cost: ${format(this.cost(),true)} <span class="Tracs">Tra</span>
+                    `;
+            },
             cost() {return new Decimal(2).times(player.c.c1up)},
             effect() { return player.points.add(1).pow(0.06) },
-            effectDisplay() { return format(this.effect()) + "x" },
             unlocked() {
                 if(hasUpgrade("t", 21)) { return true }//デフォ
                 if(inChallenge("c", 12)) { return true }//C12
@@ -67,11 +76,15 @@ addLayer("t", {
             onPurchase() { if (inChallenge('c', 12)) { player.c.c1up = player.c.c1up.times(10) }}//C12
         },
         23: { 
-            title: "-T13-",
-            description: "TRA boost to EXP gain",
-            cost() {return new Decimal(2).times(player.c.c1up)},
-            effect() { return player[this.layer].points.add(2).pow(0.1) },
-            effectDisplay() { return format(this.effect()) + "x" },
+            fullDisplay() {
+                return `<span style="font-size: 14px;">-T13-</span><br>
+                        <span class="Tracs">Tra</span> boosts <span class="Expcs">Exp</span> gain<br><br><br>
+                        x${format(this.effect())} <span class="Expcs">Exp</span><br><br>
+                        Cost: ${format(this.cost(),true)} <span class="Tracs">Tra</span>
+                    `;
+            },
+            cost() {return new Decimal(3).times(player.c.c1up)},
+            effect() { return player.t.points.add(2).pow(0.1) },
             unlocked() {
                 if(hasUpgrade("t", 22)) { return true }//デフォ
                 if(inChallenge("c", 12)) { return true }//C12
@@ -79,11 +92,15 @@ addLayer("t", {
             onPurchase() { if (inChallenge('c', 12)) { player.c.c1up = player.c.c1up.times(10) }}//C12
         },
         24: { 
-            title: "-T14-",
-            description: "TRA boost to TRA gain",
-            cost() {return new Decimal(18).times(player.c.c1up)},
-            effect() { return player[this.layer].points.add(2).pow(0.04) },
-            effectDisplay() { return format(this.effect()) + "x" },
+            fullDisplay() {
+                return `<span style="font-size: 14px;">-T14-</span><br>
+                        <span class="Tracs">Tra</span> boosts <span class="Tracs">Tra</span> gain<br><br><br>
+                        x${format(this.effect())} <span class="Tracs">Tra</span><br><br>
+                        Cost: ${format(this.cost(),true)} <span class="Tracs">Tra</span>
+                    `;
+            },
+            cost() {return new Decimal(17).times(player.c.c1up)},
+            effect() { return player.t.points.add(2).pow(0.04) },
             unlocked() {
                 if(player.l.points.gte(1) && hasUpgrade("t", 23)) { return true }//デフォ
                 if(inChallenge("c", 12)) { return true }//C12
@@ -91,8 +108,13 @@ addLayer("t", {
             onPurchase() { if (inChallenge('c', 12)) { player.c.c1up = player.c.c1up.times(10) }}//C12
         },
         25: { 
-            title: "-T15-",
-            description: "x4 TRA gain",
+            fullDisplay() {
+                return `<span style="font-size: 14px;">-T15-</span><br>
+                        x4 <span class="Tracs">Tra</span> gain<br><br><br><br>
+                        x${format(this.effect())} <span class="Tracs">Tra</span><br><br>
+                        Cost: ${format(this.cost(),true)} <span class="Tracs">Tra</span>
+                    `;
+            },
             cost() {return new Decimal(90).times(player.c.c1up)},
             effect() { return 4 },
             unlocked() {
@@ -102,8 +124,13 @@ addLayer("t", {
             onPurchase() { if (inChallenge('c', 12)) { player.c.c1up = player.c.c1up.times(10) }}//C12
         },
         26: { 
-            title: "-T16-",
-            description: "x6 EXP gain",
+            fullDisplay() {
+                return `<span style="font-size: 14px;">-T16-</span><br>
+                        x6 <span class="Expcs">Exp</span> gain<br><br><br><br>
+                        x${format(this.effect())} <span class="Expcs">Exp</span><br><br>
+                        Cost: ${format(this.cost(),true)} <span class="Tracs">Tra</span>
+                    `;
+            },
             cost() {return new Decimal(1111).times(player.c.c1up)},
             effect() { return 6 },
             unlocked() {
@@ -113,8 +140,12 @@ addLayer("t", {
             onPurchase() { if (inChallenge('c', 12)) { player.c.c1up = player.c.c1up.times(10) }}//C12
         },
         27: { 
-            title: "-T17-",
-            description: "Unlock new Training buyable",
+            fullDisplay() {
+                return `<span style="font-size: 14px;">-T17-</span><br>
+                        Unlock new <span class="Tracs">Training buyable</span><br><br><br><br><br>
+                        Cost: ${format(this.cost(),true)} <span class="Tracs">Tra</span>
+                    `;
+            },
             cost() { return new Decimal(hasUpgrade("p", 23) ? 1 : "1e100") },
             unlocked() {
                 if(hasMilestone("m", 1) && hasUpgrade("t", 26)) { return true }//デフォ
@@ -135,20 +166,25 @@ addLayer("t", {
                 }
                 return cost.ceil();
             },
-            effect(x) { return Decimal.pow(2, x); },
+            effect(x) { return Decimal.pow(2, x.add(player.t.buyables[13])); },
             display() {
-                return `x2 EXP gain<br>
-                        Amount: ${player.t.buyables[11]}<br>
-                        Effect: x${format(tmp.t.buyables[11].effect)}<br>
-                        Cost: ${format(tmp.t.buyables[11].cost)} <span class="tracss">Tra</span>
+                let addT = "";
+                if (player.t.buyables[13].gte(1)) { 
+                    addT = `+${format(player.t.buyables[13],true)}`
+                }
+                return `x2 <span class="Expcs">Exp</span> gain<br><br><br>
+                        <span style="font-size: 14px;">Amount</span>: ${format(player.t.buyables[11],true)}${addT}
+                        x${format(tmp.t.buyables[11].effect)} <span class="Expcs">Exp</span><br>
+                        Cost: ${format(tmp.t.buyables[11].cost,true)} <span class="Tracs">Tra</span>
                     `;
             },
             canAfford() { return player.t.points.gte(tmp.t.buyables[11].cost) },
             buy() {
                 let cost = this.cost();
 
-                if (hasMilestone('p', 0)) { cost = cost.div(2) }//リソース計算
-                if (!hasMilestone('p', 4)) { player.t.points = player.t.points.sub(cost);}//リソースからコストを減算
+                if (hasMilestone('p', 3)) { cost = cost.div(2) }//リソース計算
+
+                if (!hasMilestone('p', 7)) { player.t.points = player.t.points.sub(cost);}//リソースからコストを減算
 
                 if (inChallenge('c', 12)) { player.c.c1up = player.c.c1up.times(10) }//C12デバフ計算
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1));
@@ -167,23 +203,27 @@ addLayer("t", {
                 return cost.ceil();
             },
             effect(x) {
-                let eff = new Decimal(x)
+                let eff = new Decimal(x.add(player.t.buyables[13]))
                 if (hasMilestone("c", 0)) eff = eff.times(2)
                 return eff
             },
             display() {
-                return `Gain <span class="tracss">Tra</span> per second
-                        Amount: ${player.t.buyables[12]}<br>
-                        Effect: +${format(tmp.t.buyables[12].effect)}%<br>
-                        Cost: ${format(tmp.t.buyables[12].cost)} <span class="tracss">Tra</span>
+                let addT = "";
+                if (player.t.buyables[13].gte(1)) { 
+                    addT = `+${format(player.t.buyables[13],true)}`
+                }
+                return `Gain <span class="Tracs">Tra</span> per second<br><br><br>
+                        <span style="font-size: 14px;">Amount</span>: ${format(player.t.buyables[12],true)}${addT}
+                        <span class="Tracs">Tra</span>: +${format(tmp.t.buyables[12].effect)}%/s<br>
+                        Cost: ${format(tmp.t.buyables[12].cost,true)} <span class="Tracs">Tra</span>
                     `;
             },
             canAfford() { return player.t.points.gte(tmp.t.buyables[12].cost) },
             buy() {
                 let cost = this.cost();
 
-                if (hasMilestone('p', 3)) { cost = cost.div(2) }//リソース計算
-                if (!hasMilestone('p', 5)) { player.t.points = player.t.points.sub(cost);}//リソースからコストを減算
+                if (hasMilestone('p', 4)) { cost = cost.div(2) }//リソース計算
+                if (!hasMilestone('p', 8)) { player.t.points = player.t.points.sub(cost);}//リソースからコストを減算
                 if (inChallenge('c', 12)) { player.c.c1up = player.c.c1up.times(10) }//C12デバフ計算
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1));
             },
@@ -193,24 +233,24 @@ addLayer("t", {
         13: {
             title: "-TB3-",
             cost(x) {
-                let coss = new Decimal(x.gte(1) ? Decimal.pow(1000, x).times(player.c.c1up) : 1);
+                let coss = new Decimal(x.gte(1) ? Decimal.pow(1000, x).times(player.c.c1up) : new Decimal(1).times(player.c.c1up));
                 return coss.ceil();
             },
             effect(x) {
                 return new Decimal.add(x);
             },
             display() {
-                return `Add <span class="tracss">T11</span> and <span class="tracss">T12</span> for free<br>
-                        Amount: ${player.t.buyables[13]}<br>
-                        Effect: x${format(tmp.t.buyables[13].effect)}<br>
-                        Cost: ${format(tmp.t.buyables[13].cost)} <span class="tracss">Tra</span>
+                return `Add <span class="Tracs">TB1</span> and <span class="Tracs">TB2</span><br>for free<br><br>
+                        <span style="font-size: 14px;">Amount</span>: ${format(player.t.buyables[13],true)}
+                        +${format(tmp.t.buyables[13].effect,true)} <span class="Tracs">TB1</span> and <span class="Tracs">TB2</span><br>
+                        Cost: ${format(tmp.t.buyables[13].cost,true)} <span class="Tracs">Tra</span>
                     `;
             },
             canAfford() { return player.t.points.gte(tmp.t.buyables[13].cost) },
             buy() {
                 let cost = this.cost();
 
-                if (!hasMilestone('p', 5)) { player.t.points = player.t.points.sub(cost);}//リソースからコストを減算
+                player.t.points = player.t.points.sub(cost);//リソースからコストを減算
                 if (inChallenge('c', 12)) { player.c.c1up = player.c.c1up.times(10) }//C12デバフ計算
                 setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1));
             },
@@ -218,7 +258,7 @@ addLayer("t", {
             style: { 'height': '150px', 'width': '150px', 'font-size': '12px' },
         },
     },
-    
+
     automate() {
         if (tmp.t.buyables[11].canAfford && player.m.autoTB1) {//TB1自動購入
             addBuyables('t', 11, 1);
@@ -226,8 +266,8 @@ addLayer("t", {
 
             let ca = 0;
 
-            if (hasMilestone('p', 0)) { ca = 1; }
-            if (hasMilestone('p', 4)) { ca = 2; }
+            if (hasMilestone('p', 3)) { ca = 1; }
+            if (hasMilestone('p', 7)) { ca = 2; }
             switch (ca) {
                 case 0:
                     player.t.points = player.t.points.sub(tmp.t.buyables[11].cost);
@@ -245,8 +285,8 @@ addLayer("t", {
             if (inChallenge('c', 12)) { player.c.c1up = player.c.c1up.times(10) }//C12デバフ計算
             
             let ca = 0;
-            if (hasMilestone('p', 3)) { ca = 1; }
-            if (hasMilestone('p', 5)) { ca = 2; }
+            if (hasMilestone('p', 4)) { ca = 1; }
+            if (hasMilestone('p', 8)) { ca = 2; }
             switch (ca) {
                 case 0:
                     player.t.points = player.t.points.sub(tmp.t.buyables[12].cost);
@@ -276,10 +316,6 @@ addLayer("t", {
         "upgrades"
     ],
 
-    passiveGeneration() {
-        if (hasUpgrade('l', 23)) return upgradeEffect('l', 23).div(100);
-    },
-
     doReset(resettingLayer) {
         if (layers[resettingLayer].row > this.row) {
             layerDataReset(this.layer);
@@ -298,6 +334,18 @@ addLayer("m", {
     name: "Meditation",
     symbol: "M",
     position: 1,
+    row: 1,
+    color: "#00FFD9",
+    resource: "Meditation",
+    baseResource: "Training",
+    baseAmount() { return player.t.points },
+    requires: new Decimal(2000),
+    type: "static",
+    exponent: 2,
+    base: 2,
+    branches: "t",
+    layerShown() { return hasAchievement("a", 13) },
+
     startData() { 
         return {
             unlocked: 0,
@@ -313,14 +361,6 @@ addLayer("m", {
         return "<br>x" + format(this.effect()) + " Exp and Training gain"
         }
     },
-    color: "#3357FF",
-    requires: new Decimal(2000),
-    resource: "Meditation",
-    baseResource: "Training",
-    baseAmount() { return player.t.points },
-    type: "static",
-    exponent: 2,
-    base: 2,
     gainMult() {
         let mult = new Decimal(1)
         return mult
@@ -329,57 +369,83 @@ addLayer("m", {
         let mult = new Decimal(1)
         return mult
     },
-    row: 1,
-    layerShown() { return hasAchievement("a", 13) },
     
     upgrades: {
         21: {
-            title: "-M11-",
-            description: "x2 Physical gain",
-            cost: new Decimal(4),
-            effect() { return Decimal.add(2) },
+            fullDisplay() {
+                return `<span style="font-size: 14px;">-M11-</span><br>
+                        x2 <span class="Phycs">Phy</span>  gain<br><br><br><br>
+                        x${format(this.effect())} <span class="Phycs">Phy</span><br><br>
+                        Cost: ${format(this.cost(),true)} <span class="Medcs">Med</span>
+                    `;
+            },
+            cost() { return new Decimal(4) },
+            effect() { return new Decimal(2) },
         },
         22: {
-            title: "-M12-",
-            description: "Meditation boosts Training gain",
-            cost: new Decimal(5),
-            effect() { return Decimal.add(2) },
+            fullDisplay() {
+                return `<span style="font-size: 14px;">-M12-</span><br>
+                        Add <span class="Tracs">Tra</span> gain to <span class="Medcs">Med effect</span><br><br><br><br><br>
+                        Cost: ${format(this.cost(),true)} <span class="Medcs">Med</span>
+                    `;
+            },
+            cost() { return new Decimal(5) },
             unlocked() { return hasUpgrade("m", 21) && hasMilestone("c", 1) },
         },
     },
 
     milestones: {
         0: { 
-            requirementDescription: "1 MED",
-            effectDescription: "Keep TRA upgrades based on Med<br>Gain TRA per second by MED",
+            requirementDescription: "1 Med",
+            effectDescription() {
+                return `Keep <span class="Tracs">Tra</span> upgrades based on <span class="Medcs">Med</span><br>
+                        Boost <span class="Tracs">Tra/sec</span> by <span class="Medcs">Med</span> owned
+                    `;
+            },
             done() { return player.m.points.gte(1) }
         },
         1: { 
-            requirementDescription: "2 MED",
-            effectDescription: "2 New TRA Upgrade",
+            requirementDescription: "2 Med",
+            effectDescription() {
+                return `Unlock 2 new <span class="Tracs">Tra upgrades</span>
+                    `;
+            },
             done() { return player.m.points.gte(2) }
         },
         2: { 
-            requirementDescription: "3 MED",
+            requirementDescription: "3 Med",
             effectDescription: "Gain TRA per second by ACP",
+            effectDescription() {
+                return `Boost <span class="Tracs">Tra/sec</span> by Achievement owned
+                    `;
+            },
             done() { return player.m.points.gte(3) }
         },
     },
+
+    tabFormat: [//mフォーマット
+        "main-display",
+        "prestige-button",
+        "blank",
+        "upgrades" ,
+        "blank",
+        "milestones",
+    ],
 })
 
-
-addLayer("p", {
+addLayer("p", {//Physical
     name: "Physical",
     symbol: "P",
     position: 3,
     row: 1,
+    color: "#FF5900",
     resource: "Physical",
     baseResource: "TRA",
     baseAmount() { return player.t.points },
     requires: new Decimal(200000),
-    color: "#FF5733",
     type: "normal",
     exponent: 0.4,
+    branches: "t",
     layerShown() { return hasUpgrade('l', 25) },
 
     startData() { 
@@ -409,24 +475,38 @@ addLayer("p", {
 
     upgrades: {//pアップグレード
         21: {
-            title: "-P11-",
-            description: "Divide TB1 cost by Med",
-            cost: new Decimal(5),
+            fullDisplay() {
+                return `<span style="font-size: 14px;">-P11-</span><br>
+                        Divide <span class="Tracs">TB1</span> cost<br>by <span class="Medcs">Med</span><br><br><br>
+                        /${format(this.effect())} <span class="Tracs">TB1</span> cost<br><br>
+                        Cost: ${format(this.cost(),true)} <span class="Phycs">Phy</span>
+                    `;
+            },
+            cost() { return new Decimal(5) },
             effect() { return player.m.points.add(1) },
             effectDisplay() { return "/" + format(this.effect()) },
         },
         22: {
-            title: "-P12-",
-            description: "Divide TB2 cost by Med",
-            cost: new Decimal(30),
+            fullDisplay() {
+                return `<span style="font-size: 14px;">-P12-</span><br>
+                        Divide <span class="Tracs">TB2</span> cost<br>by <span class="Medcs">Med</span><br><br><br>
+                        /${format(this.effect())} <span class="Tracs">TB2</span> cost<br><br>
+                        Cost: ${format(this.cost(),true)} <span class="Phycs">Phy</span>
+                    `;
+            },
+            cost() { return new Decimal(25) },
             effect() { return player.m.points.add(1) },
             effectDisplay() { return "/" + format(this.effect()) },
             unlocked() { return hasUpgrade("p", 21) },
         },
         23: {
-            title: "-P13-",
-            description: "Significantly reduces the cost of -T17-",
-            cost: new Decimal(3000),
+            fullDisplay() {
+                return `<span style="font-size: 14px;">-P13-</span><br>
+                        Significantly reduces the cost of <span class="Tracs">-T17-</span><br><br><br><br>
+                        Cost: ${format(this.cost(),true)} <span class="Phycs">Phy</span>
+                    `;
+            },
+            cost() { return new Decimal(1000) },
             unlocked() { return hasUpgrade("p", 22) && hasMilestone("c", 2)},
         },
     },
@@ -434,13 +514,15 @@ addLayer("p", {
     milestones: {//pマイルストーン
         0: { 
             requirementDescription: "1 Phy -PM1-",
-            effectDescription: function() {
-                if (hasMilestone('p', 3)) {
-                    return "Autobuy TB1 and 2<br>Buying TB1 and 2 uses half the resources."
-                } else {
-                    return "Autobuy TB1<br>Buying TB1 uses half the resources."
+            effectDescription() {
+                if (hasMilestone("p", 5)) {
+                    return `Autobuy <span class="Tracs">-TB1-</span> and <span class="Tracs">-TB2-</span>
+                `;
                 }
-            
+                else {
+                    return `Autobuy <span class="Tracs">-TB1-</span>
+                `;
+                }
             },
 
             done() { 
@@ -448,7 +530,7 @@ addLayer("p", {
             },
             toggles: function() {
                 let data = [["m", "autoTB1"]];
-                if (hasMilestone('p', 3)) {
+                if (hasMilestone("p", 5)) {
                     data.push(["m", "autoTB2"]);
                 }
                 return data;
@@ -456,43 +538,105 @@ addLayer("p", {
         },
         1: { 
             requirementDescription: "2 Phy -PM2-",
-            effectDescription: "Unlock a new buyable to Training",
+            effectDescription() {
+                    return `Unlock new <span class="Tracs">Training buyable</span>`;
+            },
             done() { return player.p.points.gte(2) },
+            unlocked() { return milestoneShown_one(this.layer, this.id, "last") },
+
         },
         2: { 
             requirementDescription: "3 Phy -PM3-",
-            effectDescription: "x1.5 PHY gain",
+            effectDescription() {
+                return `x1.5 <span class="Phycs">Phy</span> gain`;
+        },
             done() { return player.p.points.gte(3) },
+            unlocked() { return milestoneShown_one(this.layer, this.id, "last") },
         },
         3: { 
-            requirementDescription: "15 Phy -PM4-",
-            effectDescription: "Add TB2 to the effect of Physical milestone 1",
-            done() { return player.p.points.gte(15) },
-            unlocked() { return hasMilestone('p', 2) },
+            requirementDescription: "5 Phy -PM4-",
+            effectDescription() {
+                return `Buying <span class="Tracs">-TB1-</span> uses half the resources`;
+        },
+            done() { return player.p.points.gte(5) },
+            unlocked() { return hasMilestone('p', 2) && milestoneShown_one(this.layer, this.id, "last")},
         },
         4: { 
-            requirementDescription: "100 Phy -PM5-",
-            effectDescription: "TB1 costs no resources.",
-            done() { return player.p.points.gte(100) },
-            unlocked() { return hasMilestone('p', 3) },
+            requirementDescription: "10 Phy -PM5-",
+            effectDescription() {
+                return `Buying <span class="Tracs">-TB2-</span> uses half the resources`;
+        },
+            done() { return player.p.points.gte(10) },
+            unlocked() { return hasMilestone('p', 2) && milestoneShown_one(this.layer, this.id, "last")},
         },
         5: { 
-            requirementDescription: "  Phy -PM6-",
-            effectDescription: "TB2 costs no resources.",
-            done() { return player.p.points.gte(10000000) },
-            unlocked() { return hasMilestone('p', 3) },
+            requirementDescription: "15 Phy -PM6-",
+            effectDescription() {
+                return `Add <span class="Tracs">-TB2-</span> to the effect of <span class="Phycs">-PM1-</span>`;
+        },
+            done() { return player.p.points.gte(15) },
+            unlocked() { return hasMilestone('p', 3) && milestoneShown_one(this.layer, this.id, "last")},
+        },
+        6: { 
+            requirementDescription: "55 Phy -PM7-",
+            effectDescription() {
+                return `x2 Exp gain`;
+        },
+            done() { return player.p.points.gte(55) },
+            unlocked() { return hasMilestone('p', 5) && milestoneShown_one(this.layer, this.id, "last")},
+        },
+        7: { 
+            requirementDescription: "100 Phy -PM8-",
+            effectDescription() {
+                return `<span class="Tracs">-TB1-</span> costs no resources`;
+        },
+            done() { return player.p.points.gte(100) },
+            unlocked() { return hasMilestone("p", 6) && milestoneShown_one(this.layer, this.id, "last")},
+        },
+        8: { 
+            requirementDescription: "10,000 Phy -PM9-",
+            effectDescription() {
+                return `<span class="Tracs">-TB2-</span> costs no resources`;
+        },
+            done() { return player.p.points.gte(10000) },
+            unlocked() { return hasMilestone("p", 6) && milestoneShown_one(this.layer, this.id, "last")},
         },
     },
+
+    tabFormat: [//pフォーマット
+        "main-display",
+        "prestige-button",
+        "blank",
+        "upgrades" ,
+        "milestones",
+        ["display-text", function() {//マイルストーン
+            return `<div style="text-align: center; font-size: 20px;">-Achieved Milestone-</div><br>
+            <div style="text-align: left;">
+                ${hasMilestone('p', 2) ? '2 Phy -PM2- : Unlock new <span class="Tracs">Training buyable</span><br>' : ''}
+                ${hasMilestone('p', 3) ? '3 Phy -PM3- : x1.5 <span class="Phycs">Phy</span> gain<br>' : ''}
+                ${hasMilestone('p', 4) ? '5 Phy -PM4- : Buying <span class="Tracs">-TB1-</span> uses half the resources<br>' : ''}
+                ${hasMilestone('p', 5) ? '10 Phy -PM5- : Buying <span class="Tracs">-TB2-</span> uses half the resources<br>' : ''}
+                ${hasMilestone('p', 6) ? '15 Phy -PM6- : <span class="Tracs">-TB1-</span> costs no resources<br>' : ''}
+                ${hasMilestone('p', 7) ? '55 Phy -PM7- : x2 <span class="Expcs">Exp</span> gain' : ''}
+                ${hasMilestone('p', 8) ? '100 Phy -PM8- : <span class="Tracs">-TB1-</span> costs no resources' : ''}
+                ${hasMilestone('p', 9) ? '10,000 Phy -PM9- : <span class="Tracs">-TB2-</span> costs no resources' : ''}
+            </div>
+            <br><br><br><br>
+            `;
+        }],
+    ],
 })
 
-
-addLayer("c", {
+addLayer("c", {//Challenge
     name: "Challenge",
     symbol: "C",
     position: 2,
     row: 1,
-    color: "#FFD700",
+    color: "#FFD900",
     resource: "Challenge",
+    branches: "t",
+    layerShown() { return hasUpgrade('l', 31) },
+
     startData() {
         return {
             unlocked: true,
@@ -518,19 +662,17 @@ addLayer("c", {
 
             goalDescription(){
                 switch (challengeCompletions('c', 11)) {
-                    case 0:
-                        return "100,000,000 EXP<br>"
-                    case 1:
-                        return "2.00e9<br>"
+                    case 0: return "1.00e8 Exp<br>"
+                    case 1: return "1.00e9<br>"
+                    case 2: return "1.00e100<br>"
                 }
             },
 
             canComplete(){
                 switch (challengeCompletions('c', 11)) {
-                    case 0:
-                        return player.points.gte(100000000)
-                    case 1:
-                        return player.points.gte("2e9")
+                    case 0: return player.points.gte("1e8")
+                    case 1: return player.points.gte("1e9")
+                    case 2: return player.points.gte("1e100")
                 }
             },
 
@@ -542,6 +684,7 @@ addLayer("c", {
                 player.t.upgrades = []
                 player.t.buyables[11] = new Decimal(0)
                 player.t.buyables[12] = new Decimal(0)
+                player.t.buyables[13] = new Decimal(0)
                 player.c.c1up = Decimal.pow(10, challengeCompletions('c', 11) * 2 + 2)//upgrade倍率コンプリート回数
             },
             onExit() {
@@ -555,10 +698,21 @@ addLayer("c", {
         12: {
             name: "-C2-",
             completionLimit: 3,
-            challengeDescription() {return "complete: " + challengeCompletions('c', 11) + "/3<br><br>Each Training layer item purchase multiplies its cost by 10.<br>all Training layer reset.<br>" },
-            goalDescription: "10,000,000 EXP<br>",
+            challengeDescription() {return "complete: " + challengeCompletions('c', 12) + "/3<br><br>Each Training layer item purchase multiplies its cost by 10.<br>all Training layer reset.<br>" },
             
-            canComplete(){return player.points.gte(10000000) },
+            goalDescription(){
+                switch (challengeCompletions('c', 12)) {
+                    case 0: return "1.00e8 Exp<br>"
+                    case 1: return "1.00e100<br>"
+                }
+            },
+            
+            canComplete(){
+                switch (challengeCompletions('c', 12)) {
+                    case 0: return player.points.gte("1e7")
+                    case 1: return player.points.gte("1e100")
+                }
+            },
 
             rewardDescription: "Get 1 Challenge point",
 
@@ -568,6 +722,7 @@ addLayer("c", {
                 player.t.upgrades = []
                 player.t.buyables[11] = new Decimal(0)
                 player.t.buyables[12] = new Decimal(0)
+                player.t.buyables[13] = new Decimal(0)
             },
             onExit() {
                 player.c.c1up = new Decimal(1)
@@ -581,14 +736,18 @@ addLayer("c", {
     milestones: {//cマイルストーン
         0: { 
             requirementDescription: "1 Cha -CM1-",
-            effectDescription: "Double TB2 effect",
-            done() { 
-                return player.c.points.gte(1);
-            },
+            effectDescription() {
+                return `Double <span class="Tracs">-TB2-</span> effect
+            `;
+        },
+            done() { return player.c.points.gte(1) },
         },
         1: { 
             requirementDescription: "2 Cha -CM2-",
-            effectDescription: "x2 PHY gain<br>Unlock new Meditation upgrade",
+            effectDescription() {
+                return `x2 <span class="Phycs">Phy</span> gain<br>Unlock new <span class="Medcs">Meditation upgrade</span>
+            `;
+        },
             done() { 
                 return player.c.points.gte(2);
             },
@@ -596,10 +755,11 @@ addLayer("c", {
         },
         2: { 
             requirementDescription: "3 Cha -CM2-",
-            effectDescription: "x3 PHY gain<br>Unlock new Physical upgrade",
-            done() { 
-                return player.c.points.gte(3);
-            },
+            effectDescription() {
+                return `x3 <span class="Phycs">Phy</span> gain<br>Unlock new <span class="Phycs">Physical upgrade</span>
+            `;
+        },
+            done() { return player.c.points.gte(3) },
             unlocked() { return hasMilestone("c", 1) },
         },
     },
@@ -610,11 +770,14 @@ addLayer("c", {
         "blank",
         "milestones"
     ],
-
-    layerShown() { return hasUpgrade('l', 31) },
 })
 
-addLayer("l", {
+addLayer("l", {//Level
+    color: "#FF00A6",
+    resource: "Lvl",
+    row: "side",
+    layerShown() { return hasAchievement("a", 12) },
+
     startData() { 
         return {
             unlocked: true,
@@ -622,37 +785,51 @@ addLayer("l", {
             level_cost: new Decimal(0),
         }
     },
-    color: "green",
-    resource: "LVL",
-    row: "side",
+    tooltip() {
+        return ("Lvl." + player.l.points)
+    },
 
     upgrades: {//Lアップグレード
         21: {
-            title: "Lvl.1",
-            description: "Unlock new Training buyable",
-            currencyDisplayName: "Exp",
             currencyInternalName: "points",
-            cost: new Decimal(50),
+            fullDisplay() {
+                return `<span style="font-size: 14px;">Lvl.1</span><br>
+                        Unlock new <span class="Tracs">Training buyable</span><br><br><br><br><br>
+                        Cost: ${format(this.cost(),true)} <span class="Expcs">Exp</span>
+                    `;
+            },
+            cost() { return new Decimal(50) },
             onPurchase() { player.l.points = player.l.points.add(1) },
         },
         22: {
-            title: "Lvl.2",
-            description: "LVL boost to Tra gain",
-            currencyDisplayName: "Exp",
             currencyInternalName: "points",
-            cost: new Decimal(300),
+            fullDisplay() {
+                return `<span style="font-size: 14px;">Lvl.2</span><br>
+                        <span class="Lvlcs">Lvl</span> boosts <span class="Tracs">Tra</span> gain<br><br><br>
+                        x${format(this.effect())} <span class="Tracs">Tra</span><br><br>
+                        Cost: ${format(this.cost(),true)} <span class="Expcs">Exp</span>
+                    `;
+            },
+            cost() { return new Decimal(300) },
             effect() { return Decimal.pow(1.2, player.l.points) },
             effectDisplay() { return format(this.effect()) + "x" },
             onPurchase() { player.l.points = player.l.points.add(1) },
             unlocked() { return hasUpgrade("l", 21) },
         },
         23: {
-            title: "Lvl.3",
-            description: "Gain TRA per second by LVL",
-            currencyDisplayName: "Tra",
-            currencyInternalName: "points",
             currencyLayer: "t",
-            cost: new Decimal(50),
+            currencyInternalName: "points",
+            fullDisplay() {
+                return `<span style="font-size: 14px;">Lvl.3</span><br>
+                        Gain <span class="Tracs">Tra</span><br>per second<br>based on <span class="Lvlcs">Lvl</span><br><br><br><br>
+                        Cost: ${format(this.cost(),true)} <span class="Tracs">Tra</span>
+                    `;
+            },
+            tooltip() {
+                return `The effects are listed in the Training layer
+                    `;
+            },
+            cost() { return new Decimal(50) },
             effect() {
                 let eff = Decimal.add(player.l.points, 2)
                 if (hasMilestone("m", 0)) eff = eff.add(player.m.points)
@@ -665,23 +842,30 @@ addLayer("l", {
             unlocked() { return hasUpgrade("l", 22) },
         },
         24: {
-            title: "Lvl.4",
-            description: "-T11- is boosted by other Tra upgrades.",
-            currencyDisplayName: "Exp",
             currencyInternalName: "points",
-            cost: new Decimal(500000),
+            fullDisplay() {
+                return `<span style="font-size: 14px;">Lvl.4</span><br>
+                        Change the effect of <span class="Tracs">-T11-</span> to be stronger<br><br><br><br>
+                        Cost: ${format(this.cost(),true)} <span class="Expcs">Exp</span>
+                    `;
+            },
+            cost() { return new Decimal(500000) },
             effect() { return Decimal.add(player.t.upgrades.length).div(2) },
             effectDisplay() { return format(this.effect()) + "+" },
             onPurchase() { player.l.points = player.l.points.add(1) },
             unlocked() { return hasUpgrade("l", 23) },
         },
         25: {
-            title: "Lvl.5",
-            description: "Unlock new layer<br>&<br>x2 Tra gain",
-            currencyDisplayName: "Med",
-            currencyInternalName: "points",
             currencyLayer: "m",
-            cost: new Decimal(3),
+            currencyInternalName: "points",
+            fullDisplay() {
+                return `<span style="font-size: 14px;">Lvl.5</span><br>
+                        Unlock <span class="Phycs">new layer</span><br>x2 <span class="Tracs">Tra</span> gain<br><br><br>
+                        x${format(this.effect())} <span class="Tracs">Tra</span><br><br>
+                        Cost: ${format(this.cost(),true)} <span class="Medcs">Med</span>
+                    `;
+            },
+            cost() { return new Decimal(3) },
             effect() { return 2 },
             onPurchase() { player.l.points = player.l.points.add(1) },
             unlocked() { return hasUpgrade("l", 24) },
@@ -692,30 +876,35 @@ addLayer("l", {
             currencyDisplayName: "Phy",
             currencyInternalName: "points",
             currencyLayer: "p",
-            cost: new Decimal(20),
+            fullDisplay() {
+                return `<span style="font-size: 14px;">Lvl.6</span><br>
+                        Unlock <span class="Chacs">new layer</span><br><br><br><br><br>
+                        Cost: ${format(this.cost(),true)} <span class="Phycs">Phy</span>
+                    `;
+            },
+            cost() { return new Decimal(20) },
             onPurchase() { player.l.points = player.l.points.add(1) },
             unlocked() { return hasUpgrade("l", 25) },
         },
     },
 
-    layerShown() { return hasAchievement("a", 12) },
-    milestonePopups: false,
 })
 
-addLayer("a", {
+addLayer("a", {//Achievement
+    resource: "Achievement",
+    row: "side",
+    color: "#FFD733",
+
     startData() { 
         return {
             unlocked: true,
             points: new Decimal(0),
         }
     },
-    color: "#FFD733",
-    resource: "ACP",
-    row: "side",
     tooltip() {
         return ("Achievements")
     },
-    achievementPopups: true,
+
     achievements: {
         11: {
             name: "Reach 1 Tra",

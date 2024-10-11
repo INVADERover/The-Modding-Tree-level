@@ -249,8 +249,54 @@ button > * {
 	--background: transparent !important;
 }
 
-.tracss {
-    border-radius: 1px;
-    text-shadow: 0px 0px 4px #33FF57;
+.Tracs {
+    background-color: rgba(0, 0, 0, 0.1); /* 0.5は透明度 */
+    text-shadow: 0px 0px 2px #26FF00;
 	font-weight: bold;
+}
+
+.Expcs {
+    background-color: rgba(0, 0, 0, 0.1); /* 0.5は透明度 */
+    text-shadow: 0px 0px 2px #ffffff;
+	font-weight: bold;
+}
+
+.Lvlcs {
+    background-color: rgba(0, 0, 0, 0.1); /* 0.5は透明度 */
+    text-shadow: 0px 0px 2px #FF00A6;
+	font-weight: bold;
+}
+
+.Phycs {
+    background-color: rgba(0, 0, 0, 0.1); /* 0.5は透明度 */
+    text-shadow: 0px 0px 2px #FF5900;
+	font-weight: bold;
+}
+
+.Medcs {
+    background-color: rgba(0, 0, 0, 0.1); /* 0.5は透明度 */
+    text-shadow: 0px 0px 2px #00FFD9;
+	font-weight: bold;
+}
+
+.Chacs {
+    background-color: rgba(0, 0, 0, 0.1); /* 0.5は透明度 */
+    text-shadow: 0px 0px 2px #FFD900;
+	font-weight: bold;
+}
+
+.ggggggggggggg {
+    color:
+	#FF0026
+	#FF5900 /* Phy */
+	#FFD900 /* Cha */
+	#A6FF00
+	#26FF00 /* Try */
+	#00FF59
+	#00FFD9 /* Med */
+	#00A6FF
+	#0026FF
+	#5900FF
+	#D900FF
+	#FF00A6 /* Lvl */
 }
