@@ -240,7 +240,6 @@ function loadVue() {
 		`
 	})
 
-	// Displays the base resource for the layer, as well as the best and total values for the layer's currency, if tracked
 	Vue.component('resource-display', {
 		props: ['layer'],
 		template: `

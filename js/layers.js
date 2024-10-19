@@ -172,13 +172,28 @@ addLayer("t", {
         32: { 
             fullDisplay() {
                 return `<span style="font-size: 14px;">-T22-</span><br>
-                        Divide <span class="Medcs">Med</span> cost by your all <span class="Tracs">Training buyables</span><br><br><br>
+                        Divide <span class="Medcs">Med</span> cost by your all <span class="Tracs">Training buyables</span><br><br>
                         /${format(this.effect())} <span class="Medcs">Med cost</span><br><br>
                         Cost: ${format(this.cost(),true)} <span class="Tracs">Tra</span>
                     `;
             },
             effect() { return player.t.buyables[11].add(player.t.buyables[12]).add(player.t.buyables[13].times(3)) },
             cost() { return new Decimal("1.00e13") },
+            unlocked() {
+                if(hasUpgrade("l", 32)) { return true }
+             },
+            onPurchase() { if (inChallenge('c', 12)) { player.c.c1up = player.c.c1up.times(10) }}//C12
+        },
+        33: { 
+            fullDisplay() {
+                return `<span style="font-size: 14px;">-T22-</span><br>
+                        Divide <span class="Medcs">Med</span> cost by your all <span class="Tracs">Training buyables</span><br><br>
+                        /${format(this.effect())} <span class="Medcs">Med cost</span><br><br>
+                        Cost: ${format(this.cost(),true)} <span class="Tracs">Tra</span>
+                    `;
+            },
+            effect() { return player.t.buyables[11].add(player.t.buyables[12]).add(player.t.buyables[13].times(3)) },
+            cost() { return new Decimal("2.00e14") },
             unlocked() {
                 if(hasUpgrade("l", 32)) { return true }
              },

@@ -105,8 +105,9 @@ function toPlaces(x, precision, maxAccepted) {
 }
 
 // Will also display very small numbers
-function formatSmall(x, precision=2) { 
-    return format(x, precision, true)    
+//変更
+function formatSmall(x, precision=3) { 
+    return format(x, false, precision)    
 }
 
 function invertOOM(x){
