@@ -648,7 +648,7 @@ addLayer("p", {//Physical
         6: { 
             requirementDescription: "55 Phy -PM7-",
             effectDescription() {
-                return `x2 Exp gain`;
+                return `x2 <span class="Expcs">Exp</span> gain`;
         },
             done() { return player.p.points.gte(55) },
             unlocked() { return hasMilestone('p', 5) && milestoneShown_one(this.layer, this.id, "last")},
@@ -669,6 +669,14 @@ addLayer("p", {//Physical
             done() { return player.p.points.gte(10000) },
             unlocked() { return hasMilestone("p", 6) && milestoneShown_one(this.layer, this.id, "last")},
         },
+        9: { 
+            requirementDescription: "600,000 Phy -PM10-",
+            effectDescription() {
+                return `x3 <span class="Expcs">Exp</span> gain`;
+        },
+            done() { return player.p.points.gte("600,000") },
+            unlocked() { return hasMilestone('p', 8) && milestoneShown_one(this.layer, this.id, "last")},
+        },
     },
 
     tabFormat: [//pフォーマット
@@ -688,6 +696,7 @@ addLayer("p", {//Physical
                 ${hasMilestone('p', 7) ? '55 Phy -PM7- : x2 <span class="Expcs">Exp</span> gain<br>' : ''}
                 ${hasMilestone('p', 8) ? '100 Phy -PM8- : <span class="Tracs">-TB1-</span> costs no resources<br>' : ''}
                 ${hasMilestone('p', 9) ? '10,000 Phy -PM9- : <span class="Tracs">-TB2-</span> costs no resources<br>' : ''}
+                ${hasMilestone('p', 10) ? '600,000 Phy -PM10- : x3 <span class="Expcs">Exp</span> gain<br>' : ''}
             </div>
             <br><br><br><br>
             `;
