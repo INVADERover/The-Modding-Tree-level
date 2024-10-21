@@ -163,9 +163,10 @@ addLayer("t", {
                         Cost: ${format(this.cost(),true)} <span class="Tracs">Tra</span>
                     `;
             },
-            cost() { return new Decimal("5.00e11") },
+            cost() { return new Decimal("5.00e11").times(player.c.c1up) },
             unlocked() {
-                if(hasUpgrade("l", 32)) { return true }//デフォ
+                if(hasUpgrade("l", 32) && hasUpgrade("t", 27)) { return true }//デフォ
+                if(hasUpgrade("l", 32) && inChallenge("c", 12)) { return true }//C12
              },
             onPurchase() { if (inChallenge('c', 12)) { player.c.c1up = player.c.c1up.times(10) }}//C12
         },
@@ -178,24 +179,26 @@ addLayer("t", {
                     `;
             },
             effect() { return player.t.buyables[11].add(player.t.buyables[12]).add(player.t.buyables[13].times(3)) },
-            cost() { return new Decimal("1.00e13") },
+            cost() { return new Decimal("1.00e13").times(player.c.c1up) },
             unlocked() {
-                if(hasUpgrade("l", 32)) { return true }
+                if(hasUpgrade("l", 32) && hasUpgrade("t", 27)) { return true }//デフォ
+                if(hasUpgrade("l", 32) && inChallenge("c", 12)) { return true }//C12
              },
             onPurchase() { if (inChallenge('c', 12)) { player.c.c1up = player.c.c1up.times(10) }}//C12
         },
         33: { 
             fullDisplay() {
-                return `<span style="font-size: 14px;">-T22-</span><br>
+                return `<span style="font-size: 14px;">-T23-</span><br>
                         Divide <span class="Medcs">Med</span> cost by your all <span class="Tracs">Training buyables</span><br><br>
                         /${format(this.effect())} <span class="Medcs">Med cost</span><br><br>
                         Cost: ${format(this.cost(),true)} <span class="Tracs">Tra</span>
                     `;
             },
             effect() { return player.t.buyables[11].add(player.t.buyables[12]).add(player.t.buyables[13].times(3)) },
-            cost() { return new Decimal("2.00e14") },
+            cost() { return new Decimal("2.00e100").times(player.c.c1up) },
             unlocked() {
-                if(hasUpgrade("l", 32)) { return true }
+                if(hasUpgrade("l", 32) && hasUpgrade("t", 27)) { return true }//デフォ
+                if(hasUpgrade("l", 32) && inChallenge("c", 12)) { return true }//C12
              },
             onPurchase() { if (inChallenge('c', 12)) { player.c.c1up = player.c.c1up.times(10) }}//C12
         },
@@ -729,7 +732,7 @@ addLayer("c", {//Challenge
                 switch (challengeCompletions('c', 11)) {
                     case 0: return "1.00e8 Exp<br>"
                     case 1: return "1.00e9<br>"
-                    case 2: return "1.00e100<br>"
+                    case 2: return "1.00e14<br>"
                 }
             },
 
@@ -737,7 +740,7 @@ addLayer("c", {//Challenge
                 switch (challengeCompletions('c', 11)) {
                     case 0: return player.points.gte("1e8")
                     case 1: return player.points.gte("1e9")
-                    case 2: return player.points.gte("1e100")
+                    case 2: return player.points.gte("1e14")
                 }
             },
 
@@ -767,7 +770,7 @@ addLayer("c", {//Challenge
             
             goalDescription(){
                 switch (challengeCompletions('c', 12)) {
-                    case 0: return "1.00e8 Exp<br>"
+                    case 0: return "1.00e7 Exp<br>"
                     case 1: return "4.00e8<br>"
                     case 2: return "4.00e100<br>"
                 }
