@@ -447,8 +447,8 @@ addLayer("m", {
                         Cost: ${format(this.cost(),true)} <span class="Medcs">Med</span>
                     `;
             },
-            cost() { return new Decimal(5) },
-            unlocked() { return hasUpgrade("m", 22) && hasMilestone("p", 11) },
+            cost() { return new Decimal(7) },
+            unlocked() { return hasUpgrade("m", 22) && hasMilestone("p", 10) },
         },
         24: {
             fullDisplay() {
@@ -458,7 +458,7 @@ addLayer("m", {
                     `;
             },
             cost() { return new Decimal(5) },
-            unlocked() { return hasUpgrade("m", 22) && hasMilestone("p", 11) },
+            unlocked() { return hasUpgrade("m", 22) && hasMilestone("p", 10) },
         },
     },
 
@@ -491,9 +491,42 @@ addLayer("m", {
         },
     },
 
+    buyables: {
+        11: {
+            title: "-MB1-",
+            cost(x) {
+                let cost = Decimal.pow(2, x.add(1));
+                return cost.ceil();
+            },
+            effect(x) {
+                let eff = hasUpgrade("t", 31) ? 2.4 : 2;
+                return Decimal.pow(eff, x.add(player.t.buyables[13]));
+            },
+            display() {
+                return `x${format(eff)} <span class="Expcs">Exp</span> gain<br><br><br>
+                        <span style="font-size: 14px;">Amount</span>: ${format(player.t.buyables[11], true)}${addT}
+                        x${format(tmp.t.buyables[11].effect)} <span class="Expcs">Exp</span><br>
+                        Cost: ${format(tmp.m.buyables[11].cost, true)} <span class="Medcs">Med</span>`;
+            },
+            canAfford() {
+                return player.m.points.gte(tmp.m.buyables[11].cost);
+            },
+            buy() {
+                player.m.points = player.m.points.sub(cost); // リソースからコストを減算
+                setBuyableAmount(this.layer, this.id, getBuyableAmount(this.layer, this.id).add(1));
+            },
+            unlocked() {
+                return hasUpgrade("m", 23);
+            },
+            style: { 'height': '150px', 'width': '150px', 'font-size': '12px' },
+        },
+    },
+
     tabFormat: [//mフォーマット
         "main-display",
         "prestige-button",
+        "blank",
+        "buyables",
         "blank",
         "upgrades" ,
         "blank",
