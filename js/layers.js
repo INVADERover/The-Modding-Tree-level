@@ -440,6 +440,26 @@ addLayer("m", {
             cost() { return new Decimal(5) },
             unlocked() { return hasUpgrade("m", 21) && hasMilestone("c", 1) },
         },
+        23: {
+            fullDisplay() {
+                return `<span style="font-size: 14px;">-M13-</span><br>
+                        Add <span class="Tracs">Tra</span> gain to <span class="Medcs">Med effect</span><br><br><br><br><br>
+                        Cost: ${format(this.cost(),true)} <span class="Medcs">Med</span>
+                    `;
+            },
+            cost() { return new Decimal(5) },
+            unlocked() { return hasUpgrade("m", 22) && hasMilestone("p", 11) },
+        },
+        24: {
+            fullDisplay() {
+                return `<span style="font-size: 14px;">-M13-</span><br>
+                        Add <span class="Tracs">Tra</span> gain to <span class="Medcs">Med effect</span><br><br><br><br><br>
+                        Cost: ${format(this.cost(),true)} <span class="Medcs">Med</span>
+                    `;
+            },
+            cost() { return new Decimal(5) },
+            unlocked() { return hasUpgrade("m", 22) && hasMilestone("p", 11) },
+        },
     },
 
     milestones: {
@@ -677,6 +697,14 @@ addLayer("p", {//Physical
             done() { return player.p.points.gte("600,000") },
             unlocked() { return hasMilestone('p', 8) && milestoneShown_one(this.layer, this.id, "last")},
         },
+        10: { 
+            requirementDescription: "1e6 Phy -PM11-",
+            effectDescription() {
+                return `Unlock 2 new <span class="Medcs">Meditation upgrade</span>`;
+        },
+            done() { return player.p.points.gte("1e6") },
+            unlocked() { return hasMilestone('p', 9) && milestoneShown_one(this.layer, this.id, "last")},
+        },
     },
 
     tabFormat: [//pフォーマット
@@ -697,6 +725,7 @@ addLayer("p", {//Physical
                 ${hasMilestone('p', 8) ? '100 Phy -PM8- : <span class="Tracs">-TB1-</span> costs no resources<br>' : ''}
                 ${hasMilestone('p', 9) ? '10,000 Phy -PM9- : <span class="Tracs">-TB2-</span> costs no resources<br>' : ''}
                 ${hasMilestone('p', 10) ? '600,000 Phy -PM10- : x3 <span class="Expcs">Exp</span> gain<br>' : ''}
+                ${hasMilestone('p', 11) ? '1e6 Phy -PM11- : Unlock 2 new <span class="Medcs">Meditation upgrade</span>' : ''}
             </div>
             <br><br><br><br>
             `;
