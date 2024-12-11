@@ -495,17 +495,16 @@ addLayer("m", {
         11: {
             title: "-MB1-",
             cost(x) {
-                let cost = Decimal.pow(2, x.add(1));
-                return cost.ceil();
+                return Decimal.pow(2, x.add(1));
             },
             effect(x) {
-                let eff = hasUpgrade("t", 31) ? 2.4 : 2;
-                return Decimal.pow(eff, x.add(player.t.buyables[13]));
+                return Decimal.pow(2, x);
             },
             display() {
-                return `x${format(eff)} <span class="Expcs">Exp</span> gain<br><br><br>
-                        <span style="font-size: 14px;">Amount</span>: ${format(player.t.buyables[11], true)}${addT}
-                        x${format(tmp.t.buyables[11].effect)} <span class="Expcs">Exp</span><br>
+                let addT = player.t.buyables[13].gte(1) ? `+${format(player.t.buyables[13], true)}` : "";
+                return `x2 <span class="Expcs">Exp</span> gain<br><br><br>
+                        <span style="font-size: 14px;">Amount</span>: ${format(player.m.buyables[11], true)}
+                        x${format(tmp.m.buyables[11].effect)} <span class="Expcs">Exp</span><br>
                         Cost: ${format(tmp.m.buyables[11].cost, true)} <span class="Medcs">Med</span>`;
             },
             canAfford() {
