@@ -980,7 +980,7 @@ addLayer("l", {//Level
             },
             cost() { return new Decimal(50) },
             effect() {
-                let eff = Decimal.add(player.l.points, 2)
+                let eff = Decimal.add(player.l.points)
                 if (hasMilestone("m", 0)) eff = eff.add(player.m.points)
                 if (hasMilestone("m", 2)) eff = eff.add(player.a.points)
                 eff = eff.add(buyableEffect("t", 12))

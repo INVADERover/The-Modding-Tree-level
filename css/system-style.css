@@ -250,39 +250,69 @@ button > * {
 }
 
 .Tracs {
-    background-color: rgba(0, 0, 0, 0.1); /* 0.5は透明度 */
-    text-shadow: 0px 0px 2px #26FF00;
-	font-weight: bold;
+	background-color: rgba(0, 0, 0, 0.1); /* 0.1は透明度 */
+	color: #26FF00; /* テキストの色 */
+    text-shadow: 
+	1px 1px 0px #000000, /* 黒い縁取り */
+	-1px 1px 0px #000000,
+	1px -1px 0px #000000,
+	-1px -1px 0px #000000,
+	0px 0px 15px #000000; /* 黒いシャドウ */
 }
 
 .Expcs {
-    background-color: rgba(0, 0, 0, 0.1); /* 0.5は透明度 */
-    text-shadow: 0px 0px 2px #ffffff;
-	font-weight: bold;
+	background-color: rgba(0, 0, 0, 0.1);
+    color: #ffffff;
+    text-shadow: 
+	1px 1px 0px #000000,
+	-1px 1px 0px #000000,
+	1px -1px 0px #000000,
+	-1px -1px 0px #000000,
+	0px 0px 15px #000000;
 }
 
 .Lvlcs {
-    background-color: rgba(0, 0, 0, 0.1); /* 0.5は透明度 */
-    text-shadow: 0px 0px 2px #FF00A6;
-	font-weight: bold;
+    background-color: rgba(0, 0, 0, 0.1);
+	color: #FF00A6;
+    text-shadow: 
+	1px 1px 0px #000000,
+	-1px 1px 0px #000000,
+	1px -1px 0px #000000,
+	-1px -1px 0px #000000,
+	0px 0px 15px #000000;
 }
 
 .Phycs {
-    background-color: rgba(0, 0, 0, 0.1); /* 0.5は透明度 */
-    text-shadow: 0px 0px 2px #FF5900;
-	font-weight: bold;
+    background-color: rgba(0, 0, 0, 0.1);
+	color: #FF5900;
+    text-shadow: 
+	1px 1px 0px #000000,
+	-1px 1px 0px #000000,
+	1px -1px 0px #000000,
+	-1px -1px 0px #000000,
+	0px 0px 15px #000000;
 }
 
 .Medcs {
-    background-color: rgba(0, 0, 0, 0.1); /* 0.5は透明度 */
-    text-shadow: 0px 0px 2px #00FFD9;
-	font-weight: bold;
+    background-color: rgba(0, 0, 0, 0.1);
+	color: #00FFD9;
+    text-shadow: 
+	1px 1px 0px #000000,
+	-1px 1px 0px #000000,
+	1px -1px 0px #000000,
+	-1px -1px 0px #000000,
+	0px 0px 15px #000000;
 }
 
 .Chacs {
-    background-color: rgba(0, 0, 0, 0.1); /* 0.5は透明度 */
-    text-shadow: 0px 0px 2px #FFD900;
-	font-weight: bold;
+    background-color: rgba(0, 0, 0, 0.1);
+	color: #FFD900;
+    text-shadow: 
+	1px 1px 0px #000000,
+	-1px 1px 0px #000000,
+	1px -1px 0px #000000,
+	-1px -1px 0px #000000,
+	0px 0px 15px #000000;
 }
 
 .ggggggggggggg {
